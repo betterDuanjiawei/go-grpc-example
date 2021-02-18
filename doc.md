@@ -9,6 +9,7 @@
 
 2021/02/18 19:41:42 client.Search err:rpc error: code = Unavailable desc = connection error: desc = "transport: authentication handshake failed: x509: certificate relies on legacy Common Name field, use SANs or temporarily enable Common Name matching with GODEBUG=x509ignoreCN=0"
 https://blog.csdn.net/shachao888/article/details/110850501(实测可用)
+ GODEBUG=x509ignoreCN=0 go run client.go
 https://www.cnblogs.com/jackluo/p/13841286.html
 ```
 

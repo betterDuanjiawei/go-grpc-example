@@ -2,9 +2,12 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	pb "github.com/betterDuanjiawei/go-grpc-example/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"io/ioutil"
 	"log"
 	"net"
 )
@@ -18,10 +21,26 @@ func (s *SearchService) Search(ctx context.Context, r *pb.SearchRequest) (*pb.Se
 const PORT = "9001"
 
 func main() {
-	c, err := credentials.NewServerTLSFromFile("../../conf/server.pem", "../../conf/server.key")
+	cert, err := tls.LoadX509KeyPair("../../conf/server/server.pem", "../../conf/server/server.key")
 	if err != nil {
-		log.Fatalf("credentials.NewServerTLSFromFile err: %v", err)
+		log.Fatalf("tls.LoadX509KeyPair err: %v", err)
 	}
+
+	certPool := x509.NewCertPool()
+	ca, err := ioutil.ReadFile("../../conf/ca.pem")
+	if err != nil {
+		log.Fatalf("ioutil.ReadFile err: %v", err)
+	}
+
+	if ok := certPool.AppendCertsFromPEM(ca); !ok {
+		log.Fatalf("certPool.AppendCertsFromPEM err")
+	}
+
+	c := credentials.NewTLS(&tls.Config{
+		Certificates: []tls.Certificate{cert},
+		ClientAuth:   tls.RequireAndVerifyClientCert,
+		ClientCAs:    certPool,
+	})
 
 	server := grpc.NewServer(grpc.Creds(c))
 	pb.RegisterSearchServiceServer(server, &SearchService{})

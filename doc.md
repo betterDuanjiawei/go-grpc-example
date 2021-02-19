@@ -41,3 +41,6 @@ protoc --go_out=plugins=grpc:. stream.proto
 ## 拦截器
 * 普通方法：一元拦截器（grpc.UnaryInterceptor）
 * 流方法：流拦截器（grpc.StreamInterceptor）
+
+## Zipkin
+* 安装 docker run -d -p 9411:9411 openzipkin/zipkin

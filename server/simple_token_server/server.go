@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -20,10 +21,15 @@ type SearchService struct {
 }
 
 func (s *SearchService) Search(ctx context.Context, r *pb.SearchRequest) (*pb.SearchResponse, error) {
-	if err := s.auth.Check(ctx); err != nil {
-		return nil, err
+	for i := 0; i < 5; i++ {
+		if ctx.Err() == context.Canceled {
+			return nil, status.Errorf(codes.Canceled, "SearchService.Search canceled")
+		}
+
+		time.Sleep(1 * time.Second)
 	}
-	return &pb.SearchResponse{Response: r.GetRequest() + " Token Server"}, nil
+
+	return &pb.SearchResponse{Response: r.GetRequest() + " Server"}, nil
 }
 
 const PORT = "9004"

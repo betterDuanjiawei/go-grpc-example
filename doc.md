@@ -33,3 +33,11 @@ protoc --go_out=plugins=grpc:. stream.proto
 
 ## Protoc Plugin
 * go get -u github.com/golang/protobuf/protoc-gen-go
+
+##  go-grpc-middleware
+* 可以发现 gRPC 本身居然只能设置一个拦截器，难道所有的逻辑都只能写在一起？关于这一点，你可以放心。采用开源项目 go-grpc-middleware 就可以解决这个问题，本章也会使用它。
+* go get -u github.com/grpc-ecosystem/go-grpc-middleware
+
+## 拦截器
+* 普通方法：一元拦截器（grpc.UnaryInterceptor）
+* 流方法：流拦截器（grpc.StreamInterceptor）
